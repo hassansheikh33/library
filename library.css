@@ -1,0 +1,23 @@
+#bod {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    width: 100%;
+}
+
+.clr {
+    background-color: #1d2630;
+    color: #fff;
+}
+
+h1 {
+    text-align: center;
+}
+
+table {
+    width: 100%;
+}
+
+table tr {
+    border-bottom: 1px solid #3f3e3e;
+}
