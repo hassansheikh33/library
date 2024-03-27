@@ -14,7 +14,7 @@
     <div class="container">
         <h1>Library Management system</h1>
         <main>
-            <form id="book-form">
+            <form id="book-form" autocapitalize="words" autocomplete="off">
                 <fieldset class="m-3">
                     <label for="name">Book Title:</label>
                     <input type="text" id="name" class="form-control" placeholder="Enter Book Name">
@@ -39,7 +39,8 @@
                 </fieldset>
                 <fieldset class="m-3">
                     <button type="submit" id="submit-btn" class="btn btn-success">Add Book</button>
-                    <button type="reset" id="clear-btn" class="btn btn-danger">Clear all</button>
+                    <button type="reset" class="btn btn-primary">Clear All</button>
+                    <button type="reset" id="clear-btn" class="btn btn-danger">Delete all Books</button>
                 </fieldset>
             </form>
         </main>
@@ -69,33 +70,10 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body clr">
-                    <form id="book-form">
-                        <fieldset class="m-3">
-                            <label for="name">Book Title:</label>
-                            <input type="text" id="name" class="form-control name" placeholder="Enter Book Name">
-                        </fieldset>
-                        <fieldset class="m-3">
-                            <label for="author">Author:</label>
-                            <input type="text" id="author" class="form-control author"
-                                placeholder="Enter Author's Name">
-                        </fieldset>
-                        <fieldset class="m-3">
-                            <label for="genre">Genre:</label>
-                            <input type="text" id="genre" class="form-control genre" placeholder="Enter Book Genre">
-                        </fieldset>
-                        <fieldset class="m-3">
-                            <label for="year">Year:</label>
-                            <input type="text" id="year" class="form-control year" placeholder="Enter Publish Year">
-                        </fieldset>
-                        <fieldset class="m-3">
-                            <label for="quantity">Quantity:</label>
-                            <input type="text" id="quantity" class="form-control quantity" placeholder="Enter Quantity">
-                        </fieldset>
-                    </form>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <button type="button" id="modal-save-btn" class="btn btn-primary">Save changes</button>
+                    <button type="submit" id="modal-save-btn" class="btn btn-primary">Save changes</button>
                 </div>
             </div>
         </div>

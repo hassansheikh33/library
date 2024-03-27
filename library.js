@@ -8,7 +8,8 @@ document.addEventListener('DOMContentLoaded', function () {
     const addBtn = document.getElementById('submit-btn');
     const clear = document.getElementById('clear-btn');
     const bookList = document.getElementById('book-list');
-    const modal = document.getElementById('editmodal');
+    const modalBody = document.getElementsByClassName('modal-body')[0];
+    const modalFooter = document.getElementsByClassName('modal-footer')[0];
     let editId = null;
     let editElement;
 
@@ -18,8 +19,12 @@ document.addEventListener('DOMContentLoaded', function () {
 
     function addItem(e) {
         e.preventDefault();
-        if (name.value === '' || author.value === '' || genre.value === '' || year.value === '' || quantity.value === '') {
-            alert('Please fill in all fields');
+        if ((name.value.length === 0 || name.value === '' || !isNaN(name.value))
+            || (author.value.length === 0 || author.value === '' || !isNaN(author.value))
+            || (genre.value.length === 0 || genre.value === '' || !isNaN(genre.value))
+            || (year.value > new Date().getFullYear() || year.value === '' || isNaN(year.value))
+            || (quantity.value <= 0 || quantity.value > 1000 || quantity.value === '' || isNaN(quantity.value))) {
+            alert('Please fill in all fields correctly');
         } else {
             const id = new Date().getTime().toString();
             let book = {
@@ -35,9 +40,15 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     function delAll() {
-        localStorage.removeItem('books');
-        bookList.innerHTML = '';
-        reset();
+        if (localStorage.getItem('books') === null) {
+            alert('There are no items to delete');
+        } else {
+            if (confirm('Are you sure you want to Delete ALL items?')) {
+                localStorage.removeItem('books');
+                bookList.innerHTML = '';
+                reset();
+            }
+        }
     }
 
     function saveLocally(id, _book) {
@@ -49,6 +60,49 @@ document.addEventListener('DOMContentLoaded', function () {
         blist.push(item);
         localStorage.setItem('books', JSON.stringify(blist));
     }
+
+    function saveEdit() {
+        if ((document.getElementsByClassName('name')[0].value.length === 0 || document.getElementsByClassName('name')[0].value === '' || !isNaN(document.getElementsByClassName('name')[0].value))
+            || (document.getElementsByClassName('author')[0].value.length === 0 || document.getElementsByClassName('author')[0].value === '' || !isNaN(document.getElementsByClassName('author')[0].value))
+            || (document.getElementsByClassName('genre')[0].value.length === 0 || document.getElementsByClassName('genre')[0].value === '' || !isNaN(document.getElementsByClassName('genre')[0].value))
+            || (document.getElementsByClassName('year')[0].value > new Date().getFullYear() || document.getElementsByClassName('year')[0].value === '' || isNaN(document.getElementsByClassName('year')[0].value))
+            || (document.getElementsByClassName('quantity')[0].value <= 0 || document.getElementsByClassName('quantity')[0].value > 1000 || document.getElementsByClassName('quantity')[0].value === '' || isNaN(document.getElementsByClassName('quantity')[0].value))) {
+            alert('Please fill in all fields correctly');
+        } else if (editElement.children[0].textContent === document.getElementsByClassName('name')[0].value
+            && editElement.children[1].textContent === document.getElementsByClassName('author')[0].value
+            && editElement.children[2].textContent === document.getElementsByClassName('genre')[0].value
+            && editElement.children[3].textContent === document.getElementsByClassName('year')[0].value
+            && editElement.children[4].textContent === document.getElementsByClassName('quantity')[0].value) {
+            modalReset();
+        } else {
+            let book = {
+                name: document.getElementsByClassName('name')[0].value,
+                author: document.getElementsByClassName('author')[0].value,
+                genre: document.getElementsByClassName('genre')[0].value,
+                year: document.getElementsByClassName('year')[0].value,
+                quantity: document.getElementsByClassName('quantity')[0].value
+            }
+            editElement.children[0].textContent = book.name;
+            editElement.children[1].textContent = book.author;
+            editElement.children[2].textContent = book.genre;
+            editElement.children[3].textContent = book.year;
+            editElement.children[4].textContent = book.quantity;
+            editLocally(editId, book);
+            modalReset();
+        }
+    }
+
+    function editLocally(id, _book) {
+        let blist = localStorage.getItem('books') ? JSON.parse(localStorage.getItem('books')) : [];
+        blist = blist.map(item => {
+            if (item.id === id) {
+                item.book = _book;
+            }
+            return item;
+        });
+        localStorage.setItem('books', JSON.stringify(blist));
+    }
+
 
     function loadItems() {
         let blist = localStorage.getItem('books') ? JSON.parse(localStorage.getItem('books')) : [];
@@ -89,14 +143,40 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     function removeLocally(id) {
-        let blist = localStorage.getItem('books') ? JSON.parse(localStorage.getItem('books')) : [];
-        blist = blist.filter(item => item.id !== id);
-        localStorage.setItem('books', JSON.stringify(blist));
-        if (blist.length === 0)
+        let BlistLocal = localStorage.getItem('books') ? JSON.parse(localStorage.getItem('books')) : [];
+        BlistLocal = BlistLocal.filter(item => item.id !== id);
+        localStorage.setItem('books', JSON.stringify(BlistLocal));
+        if (BlistLocal.length === 0)
             localStorage.clear();
     }
 
     function editItem(e) {
+        modalBody.innerHTML = `<form id="book-form" autocapitalize="words" autocomplete="off">
+        <fieldset class="m-3">
+            <label for="name">Book Title:</label>
+            <input type="text" id="name" class="form-control name" placeholder="Enter Book Name">
+        </fieldset>
+        <fieldset class="m-3">
+            <label for="author">Author:</label>
+            <input type="text" id="author" class="form-control author"
+                placeholder="Enter Author's Name">
+        </fieldset>
+        <fieldset class="m-3">
+            <label for="genre">Genre:</label>
+            <input type="text" id="genre" class="form-control genre" placeholder="Enter Book Genre">
+        </fieldset>
+        <fieldset class="m-3">
+            <label for="year">Year:</label>
+            <input type="text" id="year" class="form-control year" placeholder="Enter Publish Year">
+        </fieldset>
+        <fieldset class="m-3">
+            <label for="quantity">Quantity:</label>
+            <input type="text" id="quantity" class="form-control quantity" placeholder="Enter Quantity">
+        </fieldset>
+    </form>`;
+        modalFooter.innerHTML = `<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+    <button type="submit" id="modal-save-btn" class="btn btn-primary">Save changes</button>`;
+        modalFooter.querySelector('#modal-save-btn').addEventListener('click', saveEdit);
         editElement = e.currentTarget.parentElement.parentElement;
         editId = editElement.dataset.id;
         document.getElementsByClassName('name')[0].value = editElement.children[0].textContent;
@@ -104,6 +184,12 @@ document.addEventListener('DOMContentLoaded', function () {
         document.getElementsByClassName('genre')[0].value = editElement.children[2].textContent;
         document.getElementsByClassName('year')[0].value = editElement.children[3].textContent;
         document.getElementsByClassName('quantity')[0].value = editElement.children[4].textContent;
+        reset();
+    }
+
+    function modalReset() {
+        modalBody.innerHTML = `<p>Your Book has been updated successfully</p>`;
+        modalFooter.innerHTML = `<button class="btn btn-primary" data-bs-dismiss="modal">Close</button>`;
     }
 
     function reset() {
