@@ -10,6 +10,17 @@
     color: #fff;
 }
 
+#logstatus {
+    margin: 0px 30px 0px 30px;
+}
+
+.navbar ul {
+    width: 20%;
+    list-style-type: none;
+    display: flex;
+    justify-content: space-between;
+}
+
 h1 {
     text-align: center;
 }

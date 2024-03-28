@@ -10,12 +10,27 @@ document.addEventListener('DOMContentLoaded', function () {
     const bookList = document.getElementById('book-list');
     const modalBody = document.getElementsByClassName('modal-body')[0];
     const modalFooter = document.getElementsByClassName('modal-footer')[0];
+    const login = document.getElementById('login');
+    const LogMail = document.getElementById('Logmail');
+    const LogPass = document.getElementById('LogPass');
+    const signup = document.getElementById('signup');
+    const signmail = document.getElementById('signmail');
+    const signpass = document.getElementById('signpass');
+    const logoutBtn = document.getElementById('logout-btn');
+    const status = document.getElementById('logstatus');
+
+    let logFlag = false;
     let editId = null;
     let editElement;
+    let sincount = 0;
+    let count = 0;
 
     window.addEventListener('DOMContentLoaded', loadItems);
     addBtn.addEventListener('click', addItem);
     clear.addEventListener('click', delAll);
+    login.addEventListener('click', loguser);
+    signup.addEventListener('click', signupUser);
+    logoutBtn.addEventListener('click', logout);
 
     function addItem(e) {
         e.preventDefault();
@@ -48,6 +63,102 @@ document.addEventListener('DOMContentLoaded', function () {
                 bookList.innerHTML = '';
                 reset();
             }
+        }
+    }
+
+    function loguser(e) {
+        e.preventDefault();
+        let users = localStorage.getItem('users') ? JSON.parse(localStorage.getItem('users')) : [];
+        if (users.length === 0 || !users) {
+            alert('No user registered yet, please sign up to continue');
+            LogMail.value = '';
+            LogPass.value = '';
+        } else {
+            if (logFlag === true) {
+                alert('You are already logged in');
+                LogMail.value = '';
+                LogPass.value = '';
+            } else if (logFlag === false) {
+
+                if (LogMail.value.length === 0 || LogMail.value === '' || !isNaN(LogMail.value) || LogPass.value.length === 0 || LogPass.value === '' || LogPass.value.toString().length === 0) {
+                    alert('Please fill in all fields correctly');
+                }
+                else if (users.length !== 0 && users) {
+                    for (let item of users) {
+                        if (item.email === LogMail.value && item.password === LogPass.value) {
+                            logFlag = true;
+                            status.innerHTML = `Logged In as ${item.email}`;
+                            alert('Logged In Successfully');
+                            LogMail.value = '';
+                            LogPass.value = '';
+                            count = 0;
+                            break;
+                        } else if (item.email !== LogMail.value || item.password !== LogPass.value) {
+                            count += 1;
+                        }
+                    }
+                    if (count > 0) {
+                        alert('Invalid Credentials');
+                        LogMail.value = '';
+                        LogPass.value = '';
+                        count = 0;
+                    }
+                }
+            }
+        }
+    }
+
+    function signupUser(e) {
+        e.preventDefault();
+        let users = localStorage.getItem('users') ? JSON.parse(localStorage.getItem('users')) : [];
+        if (signmail.value.length === 0 || signmail.value === '' || !isNaN(signmail.value) || signpass.value.length === 0 || signpass.value === '' || signpass.value.toString().length === 0) {
+            alert('Please fill in all fields correctly');
+        } else if (users.length !== 0 && users) {
+            for (let item of users) {
+                if (item.email === signmail.value) {
+                    alert('Username is not available');
+                    signmail.value = '';
+                    signpass.value = '';
+                    break;
+                } else {
+                    sincount += 1;
+                }
+            }
+            if (sincount > 0) {
+                let user = {
+                    email: signmail.value,
+                    password: signpass.value
+                }
+                users.push(user);
+                localStorage.setItem('users', JSON.stringify(users));
+                alert('User Registered Successfully, please sign in to continue');
+                signmail.value = '';
+                signpass.value = '';
+                sincount = 0;
+            }
+        } else {
+            let user = {
+                email: signmail.value,
+                password: signpass.value
+            }
+            users.push(user);
+            localStorage.setItem('users', JSON.stringify(users));
+            alert('User Registered Successfully, please sign in to continue');
+            signmail.value = '';
+            signpass.value = '';
+        }
+    }
+
+    function logout() {
+        if (logFlag === true) {
+            if (confirm('Are you sure you want to logout?')) {
+                username = '';
+                logFlag = false;
+                status.innerHTML = 'Logged Out';
+                alert('Logged Out Successfully');
+            }
+        } else {
+            alert('You are already logged out');
         }
     }
 
@@ -105,6 +216,11 @@ document.addEventListener('DOMContentLoaded', function () {
 
 
     function loadItems() {
+        if (logFlag === true) {
+            status.innerHTML = 'Logged In';
+        } else {
+            status.innerHTML = 'Logged Out';
+        }
         let blist = localStorage.getItem('books') ? JSON.parse(localStorage.getItem('books')) : [];
         if (blist.length > 0) {
             blist.forEach(item => {

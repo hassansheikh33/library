@@ -10,8 +10,33 @@
     <link rel="stylesheet" href="library.css">
 </head>
 
-<body class="clr mt-5">
-    <div class="container">
+<body class="clr">
+    <nav class="navbar navbar-expand-lg navbar-dark bg-secondary">
+        <a class="navbar-brand ms-3" href="#">LMS</a>
+        <span id="logstatus">Signed in as:</span>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarTogglerDemo01"
+            aria-controls="navbarTogglerDemo01" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarTogglerDemo01">
+            <ul class="navbar-nav mr-auto mt-2 mt-lg-0">
+                <li class="nav-item active">
+                    <button type="button" class="btn" id="login-btn" data-bs-toggle="modal"
+                        data-bs-target="#loginmodal">Login</button>
+                </li>
+                <li class="nav-item">
+                    <button type="button" class="btn" id="signup-btn" data-bs-toggle="modal"
+                        data-bs-target="#signmodal">Signup</button>
+                </li>
+                <li class="nav-item">
+                    <button type="button" class="btn" id="logout-btn">Logout</button>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+
+    <div class="container mt-3">
         <h1>Library Management system</h1>
         <main>
             <form id="book-form" autocapitalize="words" autocomplete="off">
@@ -62,6 +87,7 @@
         </div>
     </div>
 
+    <!--Edit Modal -->
     <div class="modal fade" id="editmodal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
@@ -74,6 +100,64 @@
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                     <button type="submit" id="modal-save-btn" class="btn btn-primary">Save changes</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!--login Modal -->
+    <div class="modal fade" id="loginmodal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle"
+        aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header clr">
+                    <h2 class="modal-title" id="exampleModalLongTitle">Login</h2>
+                </div>
+                <div class="modal-body clr">
+                    <form class="login-form">
+                        <fieldset class="m-3">
+                            <label for="Logmail">Email</label>
+                            <input type="email" id="Logmail" class="form-control" placeholder="Enter Your Email">
+                        </fieldset>
+                        <fieldset class="m-3">
+                            <label for="LogPass">Enter password</label>
+                            <input type="password" id="LogPass" class="form-control" placeholder="Enter Password">
+                        </fieldset>
+                        <button type="submit" class="btn ms-3 mb-3 btn-success" id='login'>Login</button>
+                    </form>
+                </div>
+                <div class="modal-footer clr">
+                    <button type="button" class="btn btn-secondary close" data-bs-dismiss="modal"
+                        aria-label="Close">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!--signup Modal -->
+    <div class="modal fade" id="signmodal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle"
+        aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header clr">
+                    <h2 class="modal-title" id="exampleModalLongTitle">SignUp</h2>
+                </div>
+                <div class="modal-body clr">
+                    <form class="signup-form">
+                        <fieldset class="m-3">
+                            <label for="signmail">Email</label>
+                            <input type="email" id="signmail" class="form-control" placeholder="Enter Your Email">
+                        </fieldset>
+                        <fieldset class="m-3">
+                            <label for="signpass">Enter password</label>
+                            <input type="password" id="signpass" class="form-control" placeholder="Enter Password">
+                        </fieldset>
+                        <button type="submit" class="btn ms-3 mb-3 btn-success" id='signup'>SignUp</button>
+                    </form>
+                </div>
+                <div class="modal-footer clr">
+                    <button type="button" class="btn btn-secondary close" data-bs-dismiss="modal"
+                        aria-label="Close">Close</button>
                 </div>
             </div>
         </div>
