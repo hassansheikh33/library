@@ -34,34 +34,44 @@ document.addEventListener('DOMContentLoaded', function () {
 
     function addItem(e) {
         e.preventDefault();
-        if ((name.value.length === 0 || name.value === '' || !isNaN(name.value))
-            || (author.value.length === 0 || author.value === '' || !isNaN(author.value))
-            || (genre.value.length === 0 || genre.value === '' || !isNaN(genre.value))
-            || (year.value > new Date().getFullYear() || year.value === '' || isNaN(year.value))
-            || (quantity.value <= 0 || quantity.value > 1000 || quantity.value === '' || isNaN(quantity.value))) {
-            alert('Please fill in all fields correctly');
-        } else {
-            const id = new Date().getTime().toString();
-            let book = {
-                name: name.value,
-                author: author.value,
-                genre: genre.value,
-                year: year.value,
-                quantity: quantity.value
-            };
-            createItem(id, book);
-            saveLocally(id, book);
+        if (logFlag === false) {
+            alert('Please login to Add a Book');
+        }
+        else {
+            if ((name.value.length === 0 || name.value === '' || !isNaN(name.value))
+                || (author.value.length === 0 || author.value === '' || !isNaN(author.value))
+                || (genre.value.length === 0 || genre.value === '' || !isNaN(genre.value))
+                || (year.value > new Date().getFullYear() || year.value === '' || isNaN(year.value))
+                || (quantity.value <= 0 || quantity.value > 1000 || quantity.value === '' || isNaN(quantity.value))) {
+                alert('Please fill in all fields correctly');
+            } else {
+                const id = new Date().getTime().toString();
+                let book = {
+                    name: name.value,
+                    author: author.value,
+                    genre: genre.value,
+                    year: year.value,
+                    quantity: quantity.value
+                };
+                createItem(id, book);
+                saveLocally(id, book);
+            }
         }
     }
 
     function delAll() {
-        if (localStorage.getItem('books') === null) {
-            alert('There are no items to delete');
-        } else {
-            if (confirm('Are you sure you want to Delete ALL items?')) {
-                localStorage.removeItem('books');
-                bookList.innerHTML = '';
-                reset();
+        if (logFlag === false) {
+            alert('Please login to Delete All Books');
+        }
+        else {
+            if (localStorage.getItem('books') === null) {
+                alert('There are no items to delete');
+            } else {
+                if (confirm('Are you sure you want to Delete ALL items?')) {
+                    localStorage.removeItem('books');
+                    bookList.innerHTML = '';
+                    reset();
+                }
             }
         }
     }
@@ -216,11 +226,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
 
     function loadItems() {
-        if (logFlag === true) {
-            status.innerHTML = 'Logged In';
-        } else {
-            status.innerHTML = 'Logged Out';
-        }
+        logFlag = false;
         let blist = localStorage.getItem('books') ? JSON.parse(localStorage.getItem('books')) : [];
         if (blist.length > 0) {
             blist.forEach(item => {
@@ -249,12 +255,16 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     function deleteItem(e) {
-        if (confirm('Are you sure you want to delete this item?')) {
-            const element = e.currentTarget.parentElement.parentElement;
-            const id = element.dataset.id;
-            bookList.removeChild(element);
-            removeLocally(id);
-            reset();
+        if (logFlag === false) {
+            alert('Please login to Delete a Book');
+        } else {
+            if (confirm('Are you sure you want to delete this item?')) {
+                const element = e.currentTarget.parentElement.parentElement;
+                const id = element.dataset.id;
+                bookList.removeChild(element);
+                removeLocally(id);
+                reset();
+            }
         }
     }
 
@@ -267,7 +277,11 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     function editItem(e) {
-        modalBody.innerHTML = `<form id="book-form" autocapitalize="words" autocomplete="off">
+        if (logFlag === false) {
+            modalBody.innerHTML = `<p>Please login to Edit a Book</p>`;
+            modalFooter.innerHTML = `<button class="btn btn-primary" data-bs-dismiss="modal">Close</button>`;
+        } else {
+            modalBody.innerHTML = `<form id="book-form" autocapitalize="words" autocomplete="off">
         <fieldset class="m-3">
             <label for="name">Book Title:</label>
             <input type="text" id="name" class="form-control name" placeholder="Enter Book Name">
@@ -290,17 +304,18 @@ document.addEventListener('DOMContentLoaded', function () {
             <input type="text" id="quantity" class="form-control quantity" placeholder="Enter Quantity">
         </fieldset>
     </form>`;
-        modalFooter.innerHTML = `<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            modalFooter.innerHTML = `<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
     <button type="submit" id="modal-save-btn" class="btn btn-primary">Save changes</button>`;
-        modalFooter.querySelector('#modal-save-btn').addEventListener('click', saveEdit);
-        editElement = e.currentTarget.parentElement.parentElement;
-        editId = editElement.dataset.id;
-        document.getElementsByClassName('name')[0].value = editElement.children[0].textContent;
-        document.getElementsByClassName('author')[0].value = editElement.children[1].textContent;
-        document.getElementsByClassName('genre')[0].value = editElement.children[2].textContent;
-        document.getElementsByClassName('year')[0].value = editElement.children[3].textContent;
-        document.getElementsByClassName('quantity')[0].value = editElement.children[4].textContent;
-        reset();
+            modalFooter.querySelector('#modal-save-btn').addEventListener('click', saveEdit);
+            editElement = e.currentTarget.parentElement.parentElement;
+            editId = editElement.dataset.id;
+            document.getElementsByClassName('name')[0].value = editElement.children[0].textContent;
+            document.getElementsByClassName('author')[0].value = editElement.children[1].textContent;
+            document.getElementsByClassName('genre')[0].value = editElement.children[2].textContent;
+            document.getElementsByClassName('year')[0].value = editElement.children[3].textContent;
+            document.getElementsByClassName('quantity')[0].value = editElement.children[4].textContent;
+            reset();
+        }
     }
 
     function modalReset() {
